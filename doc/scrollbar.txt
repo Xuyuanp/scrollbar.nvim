@@ -1,0 +1,87 @@
+*scrollbar.txt* Scrollbar for neovim
+*Scrollbar.nvim*
+*Scrollbar*
+
+==============================================================================
+Contents
+
+  1. Intro.....................................|scrollbar-intro|
+  2. Install...................................|scrollbar-install|
+  3. Config....................................|scrollbar-config|
+  4. Options...................................|scrollbar-options|
+  5. Highlight.................................*scrollbar-highlight*
+
+==============================================================================
+                                                             *scrollbar-intro*
+Intro
+
+Display scrollbar in *signcolumn* . Neovim nightly is reqired.
+
+==============================================================================
+                                                           *scrollbar-install*
+Install
+
+Just use your favorite plugin manager. e.g. vim-plug:
+>
+  Plug 'Xuyuanp/scrollbar.nvim'
+<
+
+==============================================================================
+                                                            *scrollbar-config*
+Config
+
+>
+  set signcolumn=yes " required
+
+  augroup your_config_scrollbar_nvim
+      autocmd!
+      autocmd BufEnter,BufWinEnter     * lua require('scrollbar').show()
+      autocmd CursorMoved,CursorMovedI * lua require('scrollbar').show()
+      autocmd VimResized               * lua require('scrollbar').show()
+  augroup end
+<
+
+==============================================================================
+                                                           *scrollbar-options*
+Options
+
+                                                        *g:scrollbar_max_size*
+Set scrollbar max size. By default it is set to 10.
+>
+  let g:scrollbar_max_size = 10
+<
+
+                                                        *g:scrollbar_min_size*
+Set scrollbar min size. By default it is set to 3.
+>
+  let g:scrollbar_min_size = 3
+<
+
+                                                   *g:scrollbar_sign_priority*
+Set scrollbar sign priority. By default it is set to 0. `:h sign-priority`
+for more details.
+>
+  let g:scrollbar_sign_priority = 0
+<
+
+==============================================================================
+                                                         *scrollbar-highlight*
+Highlight
+
+                                                        *hl-ScrollbarHeadSign*
+ScrollbarHeadSign                  used for head of scrollbar in sign column
+
+                                                        *hl-ScrollbarBodySign*
+ScrollbarBodySign                  used for body of scrollbar in sign column
+
+                                                        *hl-ScrollbarTailSign*
+ScrollbarTailSign                  used for tail of scrollbar in sign column
+
+                                                             *scrollbar_signs*
+You also could customize the shape of scrollbar by redefining these signs:
+`ScrollbarHead`, `ScrollbarBody`, `ScrollbarTail`. By default, they are set
+to "▲", "█", "▼" . `:h sign_define()` for
+more details.
+
+
+ vim: ft=help tw=78 et ts=2 sw=2 sts=2 norl
