@@ -4,7 +4,9 @@ g:scrollbar_excluded_filetypes	scrollbar.txt	/*g:scrollbar_excluded_filetypes*
 g:scrollbar_highlight	scrollbar.txt	/*g:scrollbar_highlight*
 g:scrollbar_max_size	scrollbar.txt	/*g:scrollbar_max_size*
 g:scrollbar_min_size	scrollbar.txt	/*g:scrollbar_min_size*
+g:scrollbar_right_offset	scrollbar.txt	/*g:scrollbar_right_offset*
 g:scrollbar_shape	scrollbar.txt	/*g:scrollbar_shape*
+g:scrollbar_width	scrollbar.txt	/*g:scrollbar_width*
 scrollbar-config	scrollbar.txt	/*scrollbar-config*
 scrollbar-install	scrollbar.txt	/*scrollbar-install*
 scrollbar-intro	scrollbar.txt	/*scrollbar-intro*

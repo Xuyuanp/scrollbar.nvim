@@ -85,11 +85,16 @@ Set scrollbar highlight group. By default all parts are set to 'Normal'
     \ }
 <
                                               *g:scrollbar_excluded_filetypes*
-Set excluded filetype. By default tis set to empty.
+Set excluded filetype. By default it is set to empty.
 
 >
   let g:scrollbar_excluded_filetypes = ['nerdtree', 'tagbar']
 <
 
+                                                           *g:scrollbar_width*
+Set scrollbar width. By default it is set to 1.
+>
+  let g:scrollbar_width = 1
+<
 
  vim: ft=help tw=78 et ts=2 sw=2 sts=2 norl
