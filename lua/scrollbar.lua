@@ -36,6 +36,8 @@ local option = {
 }
 setmetatable(option, option._mt)
 
+local ns_id = api.nvim_create_namespace("scrollbar")
+
 local next_buf_index = (function()
     local next_index = 0
 
@@ -58,11 +60,11 @@ end
 
 local function add_highlight(bufnr, size)
     local highlight = option.highlight
-    api.nvim_buf_add_highlight(bufnr, -1, highlight.head, 0, 0, -1)
+    api.nvim_buf_add_highlight(bufnr, ns_id, highlight.head, 0, 0, -1)
     for i = 1, size - 2 do
-        api.nvim_buf_add_highlight(bufnr, -1, highlight.body, i, 0, -1)
+        api.nvim_buf_add_highlight(bufnr, ns_id, highlight.body, i, 0, -1)
     end
-    api.nvim_buf_add_highlight(bufnr, -1, highlight.tail, size - 1, 0, -1)
+    api.nvim_buf_add_highlight(bufnr, ns_id, highlight.tail, size - 1, 0, -1)
 end
 
 local function create_buf(size, lines)
@@ -104,7 +106,7 @@ function M.show(winnr, bufnr)
     bar_size = fix_size(bar_size)
 
     local width = api.nvim_win_get_width(winnr)
-    local col = width - 1 - option.right_offset
+    local col = width - option.width - option.right_offset
     local row = math.floor((height - bar_size) * (curr_line/total))
 
     local opts = {
