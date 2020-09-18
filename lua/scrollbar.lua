@@ -133,6 +133,7 @@ function M.show(winnr, bufnr)
         local bar_lines = gen_bar_lines(bar_size)
         bar_bufnr = create_buf(bar_size, bar_lines)
         bar_winnr = api.nvim_open_win(bar_bufnr, false, opts)
+        api.nvim_win_set_option(bar_winnr, "winhl", "Normal:ScrollbarWinHighlight")
     end
 
     api.nvim_buf_set_var(bufnr, "scrollbar_state", {
