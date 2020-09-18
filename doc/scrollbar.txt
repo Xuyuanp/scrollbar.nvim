@@ -15,7 +15,7 @@ Contents
                                                              *scrollbar-intro*
 Intro
 
-Display scrollbar in *signcolumn* . Neovim nightly is reqired.
+Display scrollbar in neovim(0.5.0 or higher).
 
 ==============================================================================
                                                            *scrollbar-install*
@@ -29,15 +29,17 @@ Just use your favorite plugin manager. e.g. vim-plug:
 ==============================================================================
                                                             *scrollbar-config*
 Config
-
 >
-  set signcolumn=yes " required
-
   augroup your_config_scrollbar_nvim
       autocmd!
-      autocmd BufEnter,BufWinEnter     * lua require('scrollbar').show()
-      autocmd CursorMoved,CursorMovedI * lua require('scrollbar').show()
-      autocmd VimResized               * lua require('scrollbar').show()
+      autocmd BufEnter    * silent! lua require('scrollbar').show()
+      autocmd BufLeave    * silent! lua require('scrollbar').clear()
+
+      autocmd FocusGained * silent! lua require('scrollbar').show()
+      autocmd FocusLost   * silent! lua require('scrollbar').clear()
+
+      autocmd CursorMoved * silent! lua require('scrollbar').show()
+      autocmd VimResized  * silent! lua require('scrollbar').show()
   augroup end
 <
 
@@ -57,31 +59,32 @@ Set scrollbar min size. By default it is set to 3.
   let g:scrollbar_min_size = 3
 <
 
-                                                   *g:scrollbar_sign_priority*
-Set scrollbar sign priority. By default it is set to 0. `:h sign-priority`
-for more details.
+                                                           *g:scrollbar_shape*
+Set scrollbar shape. By default it is set to "{'head': '▲', 'body': '█', 'tail':
+'▼'}".
 >
-  let g:scrollbar_sign_priority = 0
+  let g:scrollbar_shape = {
+    \ 'head': '▲',
+    \ 'body': '█',
+    \ 'tail': '▼',
+    \ }
 <
 
-==============================================================================
-                                                         *scrollbar-highlight*
-Highlight
+                                                       *g:scrollbar_highlight*
+Set scrollbar highlight group. By default all parts are set to 'Normal'
+>
+  let g:scrollbar_highlight = {
+    \ 'head': 'Normal',
+    \ 'body': 'Normal',
+    \ 'tail': 'Normal',
+    \ }
+<
+                                              *g:scrollbar_excluded_filetypes*
+Set excluded filetype. By default tis set to empty.
 
-                                                        *hl-ScrollbarHeadSign*
-ScrollbarHeadSign                  used for head of scrollbar in sign column
-
-                                                        *hl-ScrollbarBodySign*
-ScrollbarBodySign                  used for body of scrollbar in sign column
-
-                                                        *hl-ScrollbarTailSign*
-ScrollbarTailSign                  used for tail of scrollbar in sign column
-
-                                                             *scrollbar_signs*
-You also could customize the shape of scrollbar by redefining these signs:
-`ScrollbarHead`, `ScrollbarBody`, `ScrollbarTail`. By default, they are set
-to "▲", "█", "▼" . `:h sign_define()` for
-more details.
+>
+  let g:scrollbar_excluded_filetypes = ['nerdtree', 'tagbar']
+<
 
 
  vim: ft=help tw=78 et ts=2 sw=2 sts=2 norl
