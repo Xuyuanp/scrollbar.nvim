@@ -58,6 +58,11 @@ Set scrollbar min size. By default it is set to 3.
 >
   let g:scrollbar_min_size = 3
 <
+                                                    *g:scrollbar_right_offset*
+Set scrollbar offset from right border of window. By default it is set to 1.
+>
+  let g:scrollbar_right_offset = 1
+<
 
                                                            *g:scrollbar_shape*
 Set scrollbar shape. By default it is set to "{'head': '▲', 'body': '█', 'tail':

@@ -6,6 +6,7 @@ local M = {}
 local default = {
     max_size = 10,
     min_size = 3,
+    right_offset = 1,
     excluded_filetypes = {},
     shape = {
         head = "▲",
@@ -102,7 +103,7 @@ function M.show(winnr, bufnr)
     bar_size = fix_size(bar_size)
 
     local width = api.nvim_win_get_width(winnr)
-    local col = width - 2
+    local col = width - 1 - option.right_offset
     local row = math.floor((height - bar_size) * (curr_line/total))
 
     local opts = {
