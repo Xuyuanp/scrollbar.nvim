@@ -6,6 +6,7 @@ local M = {}
 local default = {
     max_size = 10,
     min_size = 3,
+    width = 1,
     right_offset = 1,
     excluded_filetypes = {},
     shape = {
@@ -110,7 +111,7 @@ function M.show(winnr, bufnr)
         style = "minimal",
         relative = "win",
         win = winnr,
-        width = 1,
+        width = option.width,
         height = bar_size,
         row = row,
         col = col,
