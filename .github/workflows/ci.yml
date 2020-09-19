@@ -1,0 +1,17 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  lint:
+    name: Luacheck
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install luacheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qq -y luarocks
+          sudo luarocks install luacheck
+      - name: Luacheck
+        run: |
+          luacheck --no-color .

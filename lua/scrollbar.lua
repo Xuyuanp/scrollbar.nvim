@@ -51,7 +51,7 @@ end)()
 local function gen_bar_lines(size)
     local shape = option.shape
     local lines = { shape.head }
-    for i = 2, size-1 do
+    for _ = 2, size-1 do
         table.insert(lines, shape.body)
     end
     table.insert(lines, shape.tail)
@@ -84,7 +84,7 @@ end
 
 function M.show(winnr, bufnr)
     winnr = winnr or 0
-    bufnr = bufnr or api.nvim_win_get_buf(winnr) or 0
+    bufnr = bufnr or 0
 
     local win_config = api.nvim_win_get_config(winnr)
     -- ignore other floating windows
@@ -154,7 +154,7 @@ function M.show(winnr, bufnr)
     return bar_winnr, bar_bufnr
 end
 
-function M.clear(winnr, bufnr)
+function M.clear(_winnr, bufnr)
     bufnr = bufnr or 0
     if vim.b.scrollbar_state then
         api.nvim_win_close(vim.b.scrollbar_state.winnr, true)
