@@ -1,4 +1,8 @@
 # scrollbar.nvim
+[![Github Action](https://img.shields.io/github/workflow/status/Xuyuanp/scrollbar.nvim/CI)](https://github.com/Xuyuanp/scrollbar.nvim/actions?query=workflow%3ACI)
+[![License](https://img.shields.io/github/license/Xuyuanp/scrollbar.nvim)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub Contributors](https://img.shields.io/github/contributors/Xuyuanp/scrollbar.nvim)](https://github.com/Xuyuanp/scrollbar.nvim/graphs/contributors)
+
 scrollbar for neovim(nightly)
 
 ![](doc/preview.gif)
