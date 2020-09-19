@@ -84,7 +84,13 @@ end
 
 function M.show(winnr, bufnr)
     winnr = winnr or 0
-    bufnr = bufnr or 0
+    bufnr = bufnr or api.nvim_win_get_buf(winnr) or 0
+
+    local win_config = api.nvim_win_get_config(winnr)
+    -- ignore other floating windows
+    if win_config.relative ~= "" then
+        return
+    end
 
     local excluded_filetypes = option.excluded_filetypes
     local filetype = api.nvim_buf_get_option(bufnr, "filetype")

@@ -33,4 +33,4 @@ augroup end
 
 ## Options
 
-See in doc `:h scrollbar.nvim`.
+See in doc `:h Scrollbar.nvim`.
