@@ -129,8 +129,8 @@ function M.show(winnr, bufnr)
     local bar_winnr, bar_bufnr
     local state = vim.b.scrollbar_state
     if state then -- reuse window
-        bar_winnr = state.winnr
         bar_bufnr = state.bufnr
+        bar_winnr = state.winnr or api.nvim_open_win(bar_bufnr, false, opts)
         if state.size ~= bar_size then
             api.nvim_buf_set_lines(bar_bufnr, 0, -1, false, {})
             local bar_lines = gen_bar_lines(bar_size)
@@ -155,10 +155,13 @@ function M.show(winnr, bufnr)
 end
 
 function M.clear(_winnr, bufnr)
-    bufnr = bufnr or 0
     if vim.b.scrollbar_state then
-        api.nvim_win_close(vim.b.scrollbar_state.winnr, true)
-        api.nvim_buf_del_var(bufnr, "scrollbar_state")
+        local state = vim.b.scrollbar_state
+        api.nvim_win_close(state.winnr, true)
+        api.nvim_buf_set_var(bufnr or 0, "scrollbar_state", {
+            size  = state.size,
+            bufnr = state.bufnr,
+        })
     end
 end
 
