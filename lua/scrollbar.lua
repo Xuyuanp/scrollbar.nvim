@@ -155,8 +155,8 @@ function M.show(winnr, bufnr)
 end
 
 function M.clear(_winnr, bufnr)
-    if vim.b.scrollbar_state then
-        local state = vim.b.scrollbar_state
+    local state = vim.b.scrollbar_state
+    if state and state.winnr then
         api.nvim_win_close(state.winnr, true)
         api.nvim_buf_set_var(bufnr or 0, "scrollbar_state", {
             size  = state.size,
