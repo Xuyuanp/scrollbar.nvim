@@ -82,6 +82,11 @@ local function fix_size(size)
     return math.max(option.min_size, math.min(option.max_size, size))
 end
 
+local function buf_get_var(bufnr, name)
+    local ok, val = pcall(api.nvim_buf_get_var, bufnr, name)
+    if ok then return val end
+end
+
 function M.show(winnr, bufnr)
     winnr = winnr or 0
     bufnr = bufnr or 0
@@ -127,7 +132,7 @@ function M.show(winnr, bufnr)
     }
 
     local bar_winnr, bar_bufnr
-    local state = vim.b.scrollbar_state
+    local state = buf_get_var(bufnr, "scrollbar_state")
     if state then -- reuse window
         bar_bufnr = state.bufnr
         bar_winnr = state.winnr or api.nvim_open_win(bar_bufnr, false, opts)
@@ -155,10 +160,11 @@ function M.show(winnr, bufnr)
 end
 
 function M.clear(_winnr, bufnr)
-    local state = vim.b.scrollbar_state
+    bufnr = bufnr or 0
+    local state = buf_get_var(bufnr, "scrollbar_state")
     if state and state.winnr then
         api.nvim_win_close(state.winnr, true)
-        api.nvim_buf_set_var(bufnr or 0, "scrollbar_state", {
+        api.nvim_buf_set_var(bufnr, "scrollbar_state", {
             size  = state.size,
             bufnr = state.bufnr,
         })
