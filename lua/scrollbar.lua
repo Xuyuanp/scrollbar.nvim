@@ -142,8 +142,9 @@ function M.show(winnr, bufnr)
             api.nvim_buf_set_lines(bar_bufnr, 0, bar_size, false, bar_lines)
             add_highlight(bar_bufnr, bar_size)
         end
-
-        api.nvim_win_set_config(bar_winnr, opts)
+        if not pcall(api.nvim_win_set_config, bar_winnr, opts) then
+            bar_winnr = api.nvim_open_win(bar_bufnr, false, opts)
+        end
     else
         local bar_lines = gen_bar_lines(bar_size)
         bar_bufnr = create_buf(bar_size, bar_lines)
