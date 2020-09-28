@@ -22,8 +22,9 @@ This plugin provides only two `lua` functions, `show` and `clear`. The following
 ```vim
 augroup ScrollbarInit
   autocmd!
-  autocmd WinEnter,FocusGained,CursorMoved,VimResized * silent! lua require('scrollbar').show()
-  autocmd WinLeave,FocusLost                          * silent! lua require('scrollbar').clear()
+  autocmd CursorMoved,VimResized,QuitPre * silent! lua require('scrollbar').show()
+  autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
+  autocmd WinLeave,FocusLost             * silent! lua require('scrollbar').clear()
 augroup end
 ```
 
