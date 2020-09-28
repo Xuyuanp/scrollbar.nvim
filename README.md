@@ -32,3 +32,7 @@ augroup end
 ## Options
 
 See in doc `:h Scrollbar.nvim`.
+
+## Similar Projects
+
+* [minimap.vim](https://github.com/wfxr/minimap.vim) by @wfxr
