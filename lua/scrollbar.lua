@@ -110,15 +110,15 @@ function M.show(winnr, bufnr)
         return
     end
 
-    local cursor = api.nvim_win_get_cursor(winnr)
-    local curr_line = cursor[1]
+    local curr_line = vim.fn.line('w$') - height
+    local rel_total = total - height
 
-    local bar_size = math.ceil(height * height / total)
+    local bar_size = math.ceil(height * height / rel_total)
     bar_size = fix_size(bar_size)
 
     local width = api.nvim_win_get_width(winnr)
     local col = width - option.width - option.right_offset
-    local row = math.floor((height - bar_size) * (curr_line/total))
+    local row = math.floor((height - bar_size) * (curr_line/rel_total))
 
     local opts = {
         style = "minimal",
