@@ -9,6 +9,7 @@ local default = {
     width = 1,
     right_offset = 1,
     excluded_filetypes = {},
+    winblend = 0,
     shape = {
         head = "▲",
         body = "█",
@@ -150,6 +151,7 @@ function M.show(winnr, bufnr)
         bar_bufnr = create_buf(bar_size, bar_lines)
         bar_winnr = api.nvim_open_win(bar_bufnr, false, opts)
         api.nvim_win_set_option(bar_winnr, "winhl", "Normal:ScrollbarWinHighlight")
+        api.nvim_win_set_option(bar_winnr, "winblend", option.winblend)
     end
 
     api.nvim_buf_set_var(bufnr, "scrollbar_state", {
