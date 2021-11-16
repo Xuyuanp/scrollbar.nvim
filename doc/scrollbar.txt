@@ -32,7 +32,7 @@ Config
 >
   augroup your_config_scrollbar_nvim
       autocmd!
-      autocmd CursorMoved,VimResized,QuitPre * silent! lua require('scrollbar').show()
+      autocmd WinScrolled,VimResized,QuitPre * silent! lua require('scrollbar').show()
       autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
       autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
   augroup end
@@ -91,5 +91,13 @@ Set scrollbar width. By default it is set to 1.
 >
   let g:scrollbar_width = 1
 <
+
+                                                        *g:scrollbar_winblend*
+Set pseudo-transparency for scrollbar floating window.
+Check 'winblend' for more info. By default it is set to 0 (disabled).
+>
+  let g:scrollbar_winblend = 0
+
+
 
  vim: ft=help tw=78 et ts=2 sw=2 sts=2 norl
