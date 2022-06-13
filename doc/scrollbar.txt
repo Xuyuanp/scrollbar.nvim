@@ -61,7 +61,7 @@ Set scrollbar offset from right border of window. By default it is set to 1.
 
                                                            *g:scrollbar_shape*
 Set scrollbar shape. By default it is set to "{'head': '▲', 'body': '█', 'tail':
-'▼'}".
+'▼'}". Empty 'head' or 'tail' are allowed.
 >
   let g:scrollbar_shape = {
     \ 'head': '▲',
