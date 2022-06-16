@@ -51,11 +51,18 @@ end)()
 
 local function gen_bar_lines(size)
     local shape = option.shape
-    local lines = { shape.head }
-    for _ = 2, size-1 do
+    local lines = {}
+    if shape.head ~= "" then
+        table.insert(lines, shape.head)
+    end
+    local start_index = shape.head == "" and 1 or 2
+    local end_index = shape.tail == "" and size or size-1
+    for _ = start_index, end_index do
         table.insert(lines, shape.body)
     end
-    table.insert(lines, shape.tail)
+    if shape.tail ~= "" then
+        table.insert(lines, shape.tail)
+    end
     return lines
 end
 
