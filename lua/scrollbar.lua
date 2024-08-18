@@ -11,33 +11,35 @@ local default = {
     excluded_filetypes = {},
     winblend = 0,
     shape = {
-        head = "▲",
-        body = "█",
-        tail = "▼",
+        head = '▲',
+        body = '█',
+        tail = '▼',
     },
     highlight = {
-        head = "Normal",
-        body = "Normal",
-        tail = "Normal",
-    }
+        head = 'Normal',
+        body = 'Normal',
+        tail = 'Normal',
+    },
 }
 
 local option = {
     _mt = {
-        __index = function(_table, key)
-            local val = vim.g["scrollbar_" .. key]
-            if not val then return default[key] end
+        __index = function(_, key)
+            local val = vim.g['scrollbar_' .. key]
+            if not val then
+                return default[key]
+            end
 
-            if type(val) == "table" then
-                val = vim.tbl_extend("keep", val, default[key])
+            if type(val) == 'table' then
+                val = vim.tbl_extend('keep', val, default[key])
             end
             return val
-        end
-    }
+        end,
+    },
 }
 setmetatable(option, option._mt)
 
-local ns_id = api.nvim_create_namespace("scrollbar")
+local ns_id = api.nvim_create_namespace('scrollbar')
 
 local next_buf_index = (function()
     local next_index = 0
@@ -52,15 +54,15 @@ end)()
 local function gen_bar_lines(size)
     local shape = option.shape
     local lines = {}
-    if shape.head ~= "" then
+    if shape.head ~= '' then
         table.insert(lines, shape.head)
     end
-    local start_index = shape.head == "" and 1 or 2
-    local end_index = shape.tail == "" and size or size-1
+    local start_index = shape.head == '' and 1 or 2
+    local end_index = shape.tail == '' and size or size - 1
     for _ = start_index, end_index do
         table.insert(lines, shape.body)
     end
-    if shape.tail ~= "" then
+    if shape.tail ~= '' then
         table.insert(lines, shape.tail)
     end
     return lines
@@ -77,8 +79,8 @@ end
 
 local function create_buf(size, lines)
     local bufnr = api.nvim_create_buf(false, true)
-    api.nvim_buf_set_option(bufnr, "filetype", "scrollbar")
-    api.nvim_buf_set_name(bufnr, "scrollbar_" .. next_buf_index())
+    vim.bo[bufnr].filetype = 'scrollbar'
+    api.nvim_buf_set_name(bufnr, 'scrollbar_' .. next_buf_index())
     api.nvim_buf_set_lines(bufnr, 0, size, false, lines)
 
     add_highlight(bufnr, size)
@@ -92,7 +94,9 @@ end
 
 local function buf_get_var(bufnr, name)
     local ok, val = pcall(api.nvim_buf_get_var, bufnr, name)
-    if ok then return val end
+    if ok then
+        return val
+    end
 end
 
 function M.show(winnr, bufnr)
@@ -101,17 +105,17 @@ function M.show(winnr, bufnr)
 
     local win_config = api.nvim_win_get_config(winnr)
     -- ignore other floating windows
-    if win_config.relative ~= "" then
+    if win_config.relative ~= '' then
         return
     end
 
     local excluded_filetypes = option.excluded_filetypes
-    local filetype = api.nvim_buf_get_option(bufnr, "filetype")
-    if filetype == "" or vim.tbl_contains(excluded_filetypes, filetype) then
+    local filetype = vim.bo[bufnr].filetype
+    if filetype == '' or vim.tbl_contains(excluded_filetypes, filetype) then
         return
     end
 
-    local total = vim.fn.line("$")
+    local total = vim.fn.line('$')
     local height = api.nvim_win_get_height(winnr)
     if total <= height then
         M.clear(winnr, bufnr)
@@ -126,21 +130,22 @@ function M.show(winnr, bufnr)
 
     local width = api.nvim_win_get_width(winnr)
     local col = width - option.width - option.right_offset
-    local row = math.floor((height - bar_size) * (curr_line/rel_total))
+    local row = math.floor((height - bar_size) * (curr_line / rel_total))
 
     local opts = {
-        style = "minimal",
-        relative = "win",
+        style = 'minimal',
+        relative = 'win',
         win = winnr,
         width = option.width,
         height = bar_size,
         row = row,
         col = col,
         focusable = false,
+        zindex = 1,
     }
 
     local bar_winnr, bar_bufnr
-    local state = buf_get_var(bufnr, "scrollbar_state")
+    local state = buf_get_var(bufnr, 'scrollbar_state')
     if state then -- reuse window
         bar_bufnr = state.bufnr
         bar_winnr = state.winnr or api.nvim_open_win(bar_bufnr, false, opts)
@@ -157,25 +162,25 @@ function M.show(winnr, bufnr)
         local bar_lines = gen_bar_lines(bar_size)
         bar_bufnr = create_buf(bar_size, bar_lines)
         bar_winnr = api.nvim_open_win(bar_bufnr, false, opts)
-        api.nvim_win_set_option(bar_winnr, "winhl", "Normal:ScrollbarWinHighlight")
-        api.nvim_win_set_option(bar_winnr, "winblend", option.winblend)
+        vim.wo[bar_winnr].winhighlight = 'Normal:ScrollbarWinHighlight'
+        vim.wo[bar_winnr].winblend = option.winblend
     end
 
-    api.nvim_buf_set_var(bufnr, "scrollbar_state", {
+    api.nvim_buf_set_var(bufnr, 'scrollbar_state', {
         winnr = bar_winnr,
         bufnr = bar_bufnr,
-        size  = bar_size,
+        size = bar_size,
     })
     return bar_winnr, bar_bufnr
 end
 
-function M.clear(_winnr, bufnr)
+function M.clear(_, bufnr)
     bufnr = bufnr or 0
-    local state = buf_get_var(bufnr, "scrollbar_state")
+    local state = buf_get_var(bufnr, 'scrollbar_state')
     if state and state.winnr then
         api.nvim_win_close(state.winnr, true)
-        api.nvim_buf_set_var(bufnr, "scrollbar_state", {
-            size  = state.size,
+        api.nvim_buf_set_var(bufnr, 'scrollbar_state', {
+            size = state.size,
             bufnr = state.bufnr,
         })
     end
