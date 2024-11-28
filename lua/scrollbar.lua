@@ -176,13 +176,13 @@ end
 
 function M.clear(_, bufnr)
     bufnr = bufnr or 0
-    local state = buf_get_var(bufnr, 'scrollbar_state')
-    if state and state.winnr then
+    local state = vim.b[bufnr].scrollbar_state
+    if state and state.winnr and api.nvim_win_is_valid(state.winnr) then
         api.nvim_win_close(state.winnr, true)
-        api.nvim_buf_set_var(bufnr, 'scrollbar_state', {
+        vim.b[bufnr].scrollbar_state = {
             size = state.size,
             bufnr = state.bufnr,
-        })
+        }
     end
 end
 
