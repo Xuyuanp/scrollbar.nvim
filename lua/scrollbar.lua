@@ -92,16 +92,10 @@ local function fix_size(size)
     return math.max(option.min_size, math.min(option.max_size, size))
 end
 
-local function buf_get_var(bufnr, name)
-    local ok, val = pcall(api.nvim_buf_get_var, bufnr, name)
-    if ok then
-        return val
-    end
-end
-
-function M.show(winnr, bufnr)
-    winnr = winnr or 0
-    bufnr = bufnr or 0
+---@param winnr? integer
+function M.show(winnr)
+    winnr = winnr or api.nvim_get_current_win()
+    local bufnr = api.nvim_win_get_buf(winnr)
 
     local win_config = api.nvim_win_get_config(winnr)
     -- ignore other floating windows
@@ -118,7 +112,7 @@ function M.show(winnr, bufnr)
     local total = vim.fn.line('$')
     local height = api.nvim_win_get_height(winnr)
     if total <= height then
-        M.clear(winnr, bufnr)
+        M.clear(winnr)
         return
     end
 
@@ -144,46 +138,53 @@ function M.show(winnr, bufnr)
         zindex = 1,
     }
 
-    local bar_winnr, bar_bufnr
-    local state = buf_get_var(bufnr, 'scrollbar_state')
-    if state then -- reuse window
-        bar_bufnr = state.bufnr
-        bar_winnr = state.winnr or api.nvim_open_win(bar_bufnr, false, opts)
-        if state.size ~= bar_size then
-            api.nvim_buf_set_lines(bar_bufnr, 0, -1, false, {})
-            local bar_lines = gen_bar_lines(bar_size)
-            api.nvim_buf_set_lines(bar_bufnr, 0, bar_size, false, bar_lines)
-            add_highlight(bar_bufnr, bar_size)
-        end
-        if not pcall(api.nvim_win_set_config, bar_winnr, opts) then
-            bar_winnr = api.nvim_open_win(bar_bufnr, false, opts)
-        end
-    else
+    local state = vim.b[bufnr].scrollbar_state or {}
+    if not state.bufnr then
         local bar_lines = gen_bar_lines(bar_size)
-        bar_bufnr = create_buf(bar_size, bar_lines)
-        bar_winnr = api.nvim_open_win(bar_bufnr, false, opts)
-        vim.wo[bar_winnr].winhighlight = 'Normal:ScrollbarWinHighlight'
-        vim.wo[bar_winnr].winblend = option.winblend
+        state.bufnr = create_buf(bar_size, bar_lines)
+        api.nvim_create_autocmd('BufWipeout', {
+            buffer = bufnr,
+            callback = function()
+                api.nvim_buf_delete(state.bufnr, { force = true })
+            end,
+        })
+    end
+    if state.winnr and api.nvim_win_is_valid(state.winnr) then
+        if state.size ~= bar_size then
+            api.nvim_buf_set_lines(state.bufnr, 0, -1, false, {})
+            local bar_lines = gen_bar_lines(bar_size)
+            api.nvim_buf_set_lines(state.bufnr, 0, bar_size, false, bar_lines)
+            add_highlight(state.bufnr, bar_size)
+            state.size = bar_size
+        end
+        api.nvim_win_set_config(state.winnr, opts)
+    else
+        state.winnr = api.nvim_open_win(state.bufnr, false, opts)
+        vim.wo[state.winnr].winhighlight = 'Normal:ScrollbarWinHighlight'
+        vim.wo[state.winnr].winblend = option.winblend
     end
 
-    api.nvim_buf_set_var(bufnr, 'scrollbar_state', {
-        winnr = bar_winnr,
-        bufnr = bar_bufnr,
-        size = bar_size,
-    })
-    return bar_winnr, bar_bufnr
+    vim.b[bufnr].scrollbar_state = state
+    return state.winnr, state.bufnr
 end
 
-function M.clear(_, bufnr)
-    bufnr = bufnr or 0
+---@param winnr? integer
+function M.clear(winnr)
+    winnr = winnr or api.nvim_get_current_win()
+    local bufnr = api.nvim_win_get_buf(winnr)
     local state = vim.b[bufnr].scrollbar_state
-    if state and state.winnr and api.nvim_win_is_valid(state.winnr) then
-        api.nvim_win_close(state.winnr, true)
-        vim.b[bufnr].scrollbar_state = {
-            size = state.size,
-            bufnr = state.bufnr,
-        }
+    if not state or not state.winnr then
+        return
     end
+
+    if api.nvim_win_is_valid(state.winnr) then
+        api.nvim_win_hide(state.winnr)
+    end
+
+    vim.b[bufnr].scrollbar_state = {
+        size = state.size,
+        bufnr = state.bufnr,
+    }
 end
 
 return M
