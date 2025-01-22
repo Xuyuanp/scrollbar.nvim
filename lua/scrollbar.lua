@@ -94,6 +94,10 @@ end
 
 ---@param winnr? integer
 function M.show(winnr)
+    if option.disabled then
+        return
+    end
+
     winnr = winnr or api.nvim_get_current_win()
     local bufnr = api.nvim_win_get_buf(winnr)
 
@@ -138,12 +142,13 @@ function M.show(winnr)
         zindex = 1,
     }
 
-    local state = vim.b[bufnr].scrollbar_state or {}
+    local state = vim.w[winnr].scrollbar_state or {}
     if not state.bufnr then
         local bar_lines = gen_bar_lines(bar_size)
         state.bufnr = create_buf(bar_size, bar_lines)
-        api.nvim_create_autocmd('BufWipeout', {
-            buffer = bufnr,
+        api.nvim_create_autocmd('WinClosed', {
+            pattern = '' .. winnr,
+            once = true,
             callback = function()
                 api.nvim_buf_delete(state.bufnr, { force = true })
             end,
@@ -164,15 +169,14 @@ function M.show(winnr)
         vim.wo[state.winnr].winblend = option.winblend
     end
 
-    vim.b[bufnr].scrollbar_state = state
+    vim.w[winnr].scrollbar_state = state
     return state.winnr, state.bufnr
 end
 
 ---@param winnr? integer
 function M.clear(winnr)
     winnr = winnr or api.nvim_get_current_win()
-    local bufnr = api.nvim_win_get_buf(winnr)
-    local state = vim.b[bufnr].scrollbar_state
+    local state = vim.w[winnr].scrollbar_state
     if not state or not state.winnr then
         return
     end
@@ -181,7 +185,7 @@ function M.clear(winnr)
         api.nvim_win_hide(state.winnr)
     end
 
-    vim.b[bufnr].scrollbar_state = {
+    vim.w[winnr].scrollbar_state = {
         size = state.size,
         bufnr = state.bufnr,
     }
