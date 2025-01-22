@@ -32,9 +32,7 @@ Config
 >
   augroup your_config_scrollbar_nvim
       autocmd!
-      autocmd WinScrolled,VimResized,QuitPre * silent! lua require('scrollbar').show()
-      autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
-      autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
+      autocmd WinScrolled,WinResized * silent! lua require('scrollbar').show()
   augroup end
 <
 
