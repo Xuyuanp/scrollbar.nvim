@@ -140,6 +140,7 @@ function M.show(winnr)
         col = col,
         focusable = false,
         zindex = 1,
+        border = 'none',
     }
 
     local state = vim.w[winnr].scrollbar_state or {}
